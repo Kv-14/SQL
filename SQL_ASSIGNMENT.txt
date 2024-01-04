@@ -11,17 +11,11 @@ Select count(Population) As total_count from bigquery-public-data.census_bureau_
 
 --I need number of Male and Female head count in zipcode 94085
 
---SELECT zipcode, sum(CASE WHEN Gender = 'Male' THEN 1 ELSE 0 END) AS MaleHeadcount, sum(CASE WHEN Gender = 'Female' THEN 1 ELSE 0 END) AS FemaleHeadcount FROM bigquery-public-data.census_bureau_usa.population_by_zip_2010 where minimum_age is not NULL and maximum_age is not NULL and zipcode = '94085' GROUP BY zipcode;
-
 select zipcode, count(case when gender='male' then gender end) as maleheadcount, count(case when gender='female' then gender end) as femaleheadcount    from bigquery-public-data.census_bureau_usa.population_by_zip_2010 where minimum_age is not NULL and maximum_age is not NULL and zipcode = '94085' group by zipcode;
-
---select gender from bigquery-public-data.census_bureau_usa.population_by_zip_2010 where minimum_age is not NULL and maximum_age is Not NULL and zipcode = '94085';
 
 
 --q4
 --I want age group for male gender which has max male population zipcode 94085 
-
---select *, row_number() over(partition by minimum_age, maximum_age order by minimum_age, maximum_age desc) as rn from bigquery-public-data.census_bureau_usa.population_by_zip_2010 where minimum_age is not NULL and maximum_age is not NULL and zipcode = '94085';
 
 select population, minimum_age,maximum_age,gender from bigquery-public-data.census_bureau_usa.population_by_zip_2010 where minimum_age is not NULL and maximum_age is not NULL and gender ='male'and    zipcode = '94085' order by population desc limit 1;
 
