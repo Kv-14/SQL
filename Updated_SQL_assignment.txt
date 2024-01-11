@@ -1,0 +1,52 @@
+#question 1
+--I need total Population in zipcode 94085
+
+Select sum(Population) As total_pop from bigquery-public-data.census_bureau_usa.population_by_zip_2010 where minimum_age is not NULL and maximum_age is Not NULL and zipcode = '94085';
+
+#question 2 
+
+--I need number of Male and Female head count in zipcode 94085
+
+
+select zipcode, count(case when gender='male' then gender end) as maleheadcount, count(case when gender='female' then gender end) as femaleheadcount    from bigquery-public-data.census_bureau_usa.population_by_zip_2010 where minimum_age is not NULL and maximum_age is not NULL and zipcode = '94085' group by zipcode;
+
+
+#Question 3
+
+--I want which Age group has max headcount for both male and female genders combine 
+
+Select gender,minimum_age,maximum_age,population, row_number() over (order by population desc) as rank from bigquery-public-data.census_bureau_usa.population_by_zip_2010 where minimum_age is not NULL and maximum_age is not NULL and gender is not null qualify rank <=2;
+
+
+--q4
+--I want age group for male gender which has max male population zipcode 94085 
+
+select minimum_age, maximum_age, population, row_number () over (order by population desc )as rank from bigquery-public-data.census_bureau_usa.population_by_zip_2010 where minimum_age is not NULL and maximum_age is not NULL and gender = 'male' and zipcode = '94085' qualify rank = 1;
+
+
+--q5
+--I want age group for female gender which has max female population zipcode 94085 
+
+select minimum_age, maximum_age, population, row_number () over (order by population desc )as rank from bigquery-public-data.census_bureau_usa.population_by_zip_2010 where minimum_age is not NULL and maximum_age is not NULL and gender = 'female' and zipcode = '94085' qualify rank = 1;
+
+
+--q6
+--I want zipcode which has highest male and female population in USA
+
+select zipcode,gender,row_number() over(partition by gender order by population desc) as rank from bigquery-public-data.census_bureau_usa.population_by_zip_2010 where minimum_age is not NULL and maximum_age is not NULL and gender is not NULL qualify rank =1; 
+
+
+--q7
+--I want first five age groups which has highest male and female population in USA
+
+select minimum_age, maximum_age ,population, gender, row_number() over(partition by gender order by population desc) as rank from bigquery-public-data.census_bureau_usa.population_by_zip_2010 where minimum_age is not NULL and maximum_age is not NULL and gender is not null and zipcode = '94085' qualify rank < 6;
+
+--q8
+--I want first five zipcodes which has highest female population in entire USA
+
+select zipcode, population, row_number() over(order by population asc) as rank from bigquery-public-data.census_bureau_usa.population_by_zip_2010 where minimum_age is not NULL and maximum_age is not NULL and gender = 'female' and population <> 0 group by zipcode,population qualify rank <6;
+
+--q9
+--I want first 10 which has lowest male population in entire USA
+
+select zipcode, population, row_number() over(order by population asc) as rank from bigquery-public-data.census_bureau_usa.population_by_zip_2010 where minimum_age is not NULL and maximum_age is not NULL and gender = 'male' and population <> 0 group by zipcode,population qualify rank <=10;
